@@ -49,7 +49,8 @@ def walkBoard(game, word, wordLengths, row, col, trie, words):
     print "\trow = " + str(row)
     print "\tcol = " + str(col)
     print "\twords = " + str(words)
-  if not trieHasWord(trie, word, False):
+  if (not trieHasWord(trie, word, False) or
+      len(word) > max(wordLengths)):
     game.board[row][col].visited = False
     return
   if trieHasWord(trie, word) and len(word) in wordLengths:
