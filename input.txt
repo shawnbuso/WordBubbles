@@ -1,3 +1,5 @@
-2,2
-ai
-st
+5,5,4
+arfh
+keio
+oos.
+ltt.

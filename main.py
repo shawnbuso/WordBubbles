@@ -2,6 +2,7 @@ from node import Node
 from game import Game
 
 WORDS_FILE = "/usr/share/dict/words"
+DEBUG = False
 
 
 def buildEnglishTrie(root):
@@ -22,37 +23,52 @@ def addWordToTrie(word, node):
     node.addChild(newNode)
     addWordToTrie(word[1:], newNode)
 
-def trieHasWord(node, word):
+def trieHasWord(node, word, isFullWord=True):
   if len(word) == 0:
-    if node.endWord:
-      return True
+    if isFullWord:
+      if node.endWord:
+        return True
+      else:
+        return False
     else:
-      return False
+      return True
   letterToFind = word[0]
   childWithLetter = node.getChildWithValue(letterToFind)
   if childWithLetter:
-    return trieHasWord(childWithLetter, word[1:])
+    return trieHasWord(childWithLetter, word[1:], isFullWord)
   else:
     return False
 
 def walkBoard(game, word, wordLengths, row, col, trie, words):
   game.board[row][col].visited = True
   word = word + game.board[row][col].letter
-  print word + " " + str(row) + "," + str(col)
-  if not wordLengths:
-    print words
-  if trieHasWord(trie, word) and len(word) in game.wordLengths:
-    print word
+  if DEBUG:
+    print "Called with the following:"
+    print "\tword = " + word
+    print "\twordLengths = " + str(wordLengths)
+    print "\trow = " + str(row)
+    print "\tcol = " + str(col)
+    print "\twords = " + str(words)
+  if not trieHasWord(trie, word, False):
+    game.board[row][col].visited = False
+    return
+  if trieHasWord(trie, word) and len(word) in wordLengths:
+    oldWords = words[:]
+    oldLengths = wordLengths[:]
     words.append(word)
     wordLengths.remove(len(word))
-    for i in range(-1, 2):
-      for j in range(-1, 2):
-        newRow = row + i
-        newCol = col + j
-        if (not (newRow==row and newCol==col) and
-            validCell(game, row+i, col+j) and
-            not game.board[newRow][newCol].visited):
-          walkBoard(game, "", wordLengths, row+i, col+j, trie, words)
+    if not wordLengths:
+      print words
+      game.board[row][col].visited = False
+      return
+    for i in range(0, game.getHeight()):
+      for j in range(0, game.getWidth()):
+        if (not (i==row and j==col) and
+            validCell(game, i, j) and
+            not game.board[i][j].visited):
+          walkBoard(game, "", wordLengths[:], i, j, trie, words[:])
+    words = oldWords
+    wordLengths = oldLengths
   for i in range(-1, 2):
     for j in range(-1, 2):
       newRow = row + i
@@ -60,7 +76,7 @@ def walkBoard(game, word, wordLengths, row, col, trie, words):
       if (not (newRow==row and newCol==col) and
           validCell(game, row+i, col+j) and
           not game.board[newRow][newCol].visited):
-        walkBoard(game, word, wordLengths, row+i, col+j, trie, words)
+        walkBoard(game, word, wordLengths[:], row+i, col+j, trie, words[:])
   game.board[row][col].visited = False
 
 
@@ -73,9 +89,10 @@ def main():
   buildEnglishTrie(allTheWords)
   game = Game()
   game.buildBoardFromFile("input.txt")
+  emptyList = []
   for i in range(0, game.getHeight()):
     for j in range(0, game.getWidth()):
-      walkBoard(game, '', game.wordLengths, i, j, allTheWords, [])
+      walkBoard(game, '', game.wordLengths[:], i, j, allTheWords, emptyList[:])
 
 if __name__ == "__main__":
   main()
