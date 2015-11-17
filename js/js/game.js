@@ -52,30 +52,28 @@ Game.prototype.clearInWords = function(nodes) {
 }
 
 Game.prototype.buildBoard = function(input) {
+  var lengthsIn = document.getElementById('lengths').value;
+  this.wordLengths = document.getElementById('lengths').value.split(',');
+  for (length in this.wordLengths) {
+     this.wordLengths[length] = parseInt(this.wordLengths[length]);
+   }
   var table = document.createElement('table');
   table.id = "table";
   var tbody = document.createElement('tbody');
   var lines = input.split('\n');
-  var row = -1;
+  var row = 0;
   for (line in lines) {
-    if (row == -1) {
-      this.wordLengths = lines[line].split(',');
-      for (length in this.wordLengths) {
-        this.wordLengths[length] = parseInt(this.wordLengths[length]);
-      }
-    } else {
-      var tr = document.createElement('tr');
-      this.board.push([]);
-      var col = 0;
-      for (cell in lines[line]) {
-        var td = document.createElement('td');
-        td.appendChild(document.createTextNode(lines[line][cell]));
-        tr.appendChild(td);
-        this.board[row].push(new Cell(lines[line][cell], td));
-        col++;
-      }
-      tbody.appendChild(tr);
+    var tr = document.createElement('tr');
+    this.board.push([]);
+    var col = 0;
+    for (cell in lines[line]) {
+      var td = document.createElement('td');
+      td.appendChild(document.createTextNode(lines[line][cell]));
+      tr.appendChild(td);
+      this.board[row].push(new Cell(lines[line][cell], td));
+      col++;
     }
+    tbody.appendChild(tr);
     row++;
   }
   table.appendChild(tbody);

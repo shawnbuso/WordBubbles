@@ -77,6 +77,7 @@ function walkBoard(game, word, wordLengths, row, col, trie, words, nodesInWord) 
       alert("Found a solution!\n" + words);
       consoleDiv.innerHTML = consoleDiv.innerHTML + words.toString() + "<br/>";
       game.clearInWords(nodesInWord);
+      colorIndex--;
       game.board[row][col].setVisited(false);
       removeValueFromArray(game.board[row][col], nodesInWord);
       removeValueFromArray(word, words);
@@ -96,10 +97,8 @@ function walkBoard(game, word, wordLengths, row, col, trie, words, nodesInWord) 
       }
     }
     removeValueFromArray(word, words);
-    if (words.length == 0) {
-      colorIndex = 0;
-    }
     game.clearInWords(nodesInWord);
+    colorIndex--;
     wordLengths.push(word.length);
   }
   for (var i=-1; i<2; i++) {
