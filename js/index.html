@@ -20,13 +20,14 @@ ltt.</textarea>
     </div>
     <input type="button" id="go" value="Go!" />
     <div id="table-container"></div>
+    <div id="console"></div>
     <script type="text/javascript" src="js/dictionary.js"></script>
     <script type="text/javascript" src="js/node.js"></script>
     <script type="text/javascript" src="js/game.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
     <script type="text/javascript">
       document.getElementById("go").addEventListener("click", function() {
-        var application = new Application();
+        getToIt();
       });
     </script>
   </body>

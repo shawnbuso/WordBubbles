@@ -9,8 +9,9 @@ Cell.prototype.setVisited = function(visited) {
   if (visited) {
     this.td.className = "visited";
   } else {
-    this.td.className = "unvisited";
+    this.td.className = "";
   }
+  alert(this);
 }
 
 Cell.prototype.toString = function() {
@@ -31,6 +32,23 @@ Game.prototype.toString = function() {
     ret = ret + "\n";
   }
   return ret;
+}
+
+Game.prototype.setInWords = function(color) {
+  for (i in this.board) {
+    for (j in this.board[i]) {
+      if (this.board[i][j].td.className == "visited") {
+        this.board[i][j].td.className = "";
+        this.board[i][j].td.style.backgroundColor = color;
+      }
+    }
+  }
+}
+
+Game.prototype.clearInWords = function(nodes) {
+  for (i in nodes) {
+    nodes[i].td.style.backgroundColor = '';
+  }
 }
 
 Game.prototype.buildBoard = function(input) {

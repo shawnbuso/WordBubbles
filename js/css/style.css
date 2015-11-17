@@ -1,6 +1,7 @@
 table {
   margin-top: 25px;
   border: 1px solid black;
+  font-size: 24px;
 }
 
 .float-left {
@@ -12,9 +13,5 @@ table {
 }
 
 .visited {
-  background-color: red;
-}
-
-.unvisited {
-  background-color: green;
+  background-color: gray;
 }

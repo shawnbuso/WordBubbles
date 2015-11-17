@@ -1,40 +1,44 @@
-var Application = function() {
+var consoleDiv = document.getElementById('console');
+var colors = ["red", "yellow", "green", "blue"];
+var colorIndex = 0;
+
+function getToIt() {
   var game = new Game();
   game.buildBoard(document.getElementById("grid").value);
-  setTimeout((function() {
-    var allTheWords = new Node();
-    this.buildEnglishTrie(allTheWords), 50;
+  var allTheWords = new Node();
+  buildEnglishTrie(allTheWords), 50;
+  setTimeout(function() {
     for (var i=0; i<game.getHeight(); i++) {
       for (var j=0; j<game.getWidth(); j++) {
-        this.walkBoard(game, '', game.wordLengths, i, j, allTheWords, []);
+        walkBoard(game, '', game.wordLengths, i, j, allTheWords, [], []);
       }
     }
-  }).bind(this), 50);
+  }, 50);
   console.log("Done");
 }
 
-Application.prototype.buildEnglishTrie = function(root) {
+function buildEnglishTrie(root) {
   for (i in Dictionary.WORDS) {
-    this.addWordToTrie(Dictionary.WORDS[i], root);
+    addWordToTrie(Dictionary.WORDS[i], root);
   }
 }
 
-Application.prototype.addWordToTrie = function(word, node) {
+function addWordToTrie(word, node) {
   if (word.length == 0) {
     node.endWord = true;
     return;
   }
   var letterToAdd = word.charAt(0);
   if (node.hasChild(letterToAdd)) {
-    this.addWordToTrie(word.substring(1), node.getChildWithValue(letterToAdd));
+    addWordToTrie(word.substring(1), node.getChildWithValue(letterToAdd));
   } else {
     var newNode = new Node(letterToAdd)
     node.addChild(newNode);
-    this.addWordToTrie(word.substring(1), newNode);
+    addWordToTrie(word.substring(1), newNode);
   }
 }
 
-Application.prototype.trieHasWord = function(node, word, isFullWord) {
+function trieHasWord(node, word, isFullWord) {
   if (word.length == 0) {
     if (isFullWord) {
       if (node.endWord) {
@@ -49,84 +53,79 @@ Application.prototype.trieHasWord = function(node, word, isFullWord) {
   var letterToFind = word.charAt(0);
   var childWithLetter = node.getChildWithValue(letterToFind);
   if (childWithLetter) {
-    return this.trieHasWord(childWithLetter, word.substring(1), isFullWord);
+    return trieHasWord(childWithLetter, word.substring(1), isFullWord);
   } else {
     return false;
   }
 }
 
-Application.prototype.walkBoard =
-    function(game, word, wordLengths, row, col, trie, words) {
+function walkBoard(game, word, wordLengths, row, col, trie, words, nodesInWord) {
   game.board[row][col].setVisited(true);
   word = word + game.board[row][col].letter;
-  /*console.log("Called with the following:");
-  console.log("\tword = " + word);
-  console.log("\twordLengths = " + wordLengths);
-  console.log("\trow = " + row);
-  console.log("\tcol = " + col);
-  console.log("\twords = " + words);*/
-  if (!this.trieHasWord(trie, word, false) ||
+  nodesInWord.push(game.board[row][col]);
+  if (!trieHasWord(trie, word, false) ||
       word.length > Math.max.apply(null, wordLengths)) {
     game.board[row][col].setVisited(false);
+    removeValueFromArray(game.board[row][col], nodesInWord);
     return;
   }
-  if (this.trieHasWord(trie, word, true) &&
+  if (trieHasWord(trie, word, true) &&
       wordLengths.indexOf(word.length) !== -1) {
     words.push(word);
-    this.removeValueFromArray(word.length, wordLengths);
+    game.setInWords(colors[colorIndex++]);
+    removeValueFromArray(word.length, wordLengths);
     if (wordLengths.length == 0) {
       console.log(words);
+      consoleDiv.innerHTML = consoleDiv.innerHTML + words.toString() + "<br/>";
       game.board[row][col].setVisited(false)
-      this.removeValueFromArray(word, words);
+      removeValueFromArray(game.board[row][col], nodesInWord);
+      removeValueFromArray(word, words);
+      game.clearInWords(nodesInWord);
+      nodesInWord.length = 0;
       wordLengths.push(word.length);
+      colorIndex = 0;
       return;
     }
     for (var i=0; i<game.getHeight(); i++) {
       for (var j=0; j<game.getWidth(); j++) {
         if (!(i == row && j == col) &&
-            this.validCell(game, i, j) &&
+            validCell(game, i, j) &&
             !game.board[i][j].visited) {
-          this.walkBoard(game, "", wordLengths, i, j, trie, words);
+          setTimeout(walkBoard(game, "", wordLengths, i, j, trie, words, []), 50);
         }
       }
     }
-    this.removeValueFromArray(word, words);
+    removeValueFromArray(word, words);
+    game.clearInWords(nodesInWord);
+    nodesInWord.length = 0;
     wordLengths.push(word.length);
+    if (words.length == 0) {
+      colorIndex = 0;
+    }
   }
   for (var i=-1; i<2; i++) {
     for (var j=-1; j<2; j++) {
       var newRow = row + i;
       var newCol = col + j;
       if (!(newRow == row && newCol == col) &&
-          this.validCell(game, newRow, newCol) &&
+          validCell(game, newRow, newCol) &&
           !game.board[newRow][newCol].visited) {
-        this.walkBoard(game, word, wordLengths, newRow, newCol, trie, words);
+        setTimeout(walkBoard(game, word, wordLengths, newRow, newCol, trie, words, nodesInWord), 50);
       }
     }
   }
   game.board[row][col].setVisited(false);
+  removeValueFromArray(game.board[row][col], nodesInWord);
 }
 
-Application.prototype.validCell = function(game, row, col) {
+function validCell(game, row, col) {
   return (row >= 0 && row < game.getHeight() &&
           col >= 0 && col < game.getWidth());
 }
 
-Application.prototype.removeValueFromArray = function(value, array) {
+function removeValueFromArray(value, array) {
   var i = array.indexOf(value);
   if (i !== -1) {
     array.splice(i, 1);
   }
-  /*if (array.length == 1 && array[0] == value) {
-    return [];
-  }
-  var what, ax;
-  var length = array.length;
-  while (length > 1 && array.length) {
-    what = array[--length];
-    while ((ax = array.indexOf(what)) !== -1) {
-      array.splice(ax, 1);
-    }
-  }
-  return array;*/
 }
