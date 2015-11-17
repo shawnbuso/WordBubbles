@@ -2,6 +2,7 @@ var Cell = function(letter, td) {
   this.letter = letter;
   this.visited = false;
   this.td = td;
+  this.wordsUsingMe = 0;
 }
 
 Cell.prototype.setVisited = function(visited) {
@@ -38,6 +39,7 @@ Game.prototype.setInWords = function(color) {
   for (i in this.board) {
     for (j in this.board[i]) {
       if (this.board[i][j].td.className == "visited") {
+        this.board[i][j].wordsUsingMe++;
         this.board[i][j].td.className = "";
         this.board[i][j].td.style.backgroundColor = color;
       }
@@ -47,7 +49,10 @@ Game.prototype.setInWords = function(color) {
 
 Game.prototype.clearInWords = function(nodes) {
   for (i in nodes) {
-    nodes[i].td.style.backgroundColor = '';
+    nodes[i].wordsUsingMe--;
+    //if (this.board[i][j].wordsUsingMe == 0) {
+      nodes[i].td.style.backgroundColor = '';
+    //}
   }
 }
 

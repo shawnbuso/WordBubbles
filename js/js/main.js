@@ -72,6 +72,7 @@ function walkBoard(game, word, wordLengths, row, col, trie, words, nodesInWord) 
   if (trieHasWord(trie, word, true) &&
       wordLengths.indexOf(word.length) !== -1) {
     words.push(word);
+    console.log("Coloring " + word);
     game.setInWords(colors[colorIndex++]);
     removeValueFromArray(word.length, wordLengths);
     if (wordLengths.length == 0) {
@@ -83,6 +84,7 @@ function walkBoard(game, word, wordLengths, row, col, trie, words, nodesInWord) 
       if (words.length == 0) {
         colorIndex = 0;
       }
+      console.log("Clearing " + word);
       game.clearInWords(nodesInWord);
       wordLengths.push(word.length);
       return;
@@ -100,6 +102,7 @@ function walkBoard(game, word, wordLengths, row, col, trie, words, nodesInWord) 
     if (words.length == 0) {
       colorIndex = 0;
     }
+    console.log("Clearing " + word);
     game.clearInWords(nodesInWord);
     wordLengths.push(word.length);
   }
