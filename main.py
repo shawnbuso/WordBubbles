@@ -1,0 +1,81 @@
+from node import Node
+from game import Game
+
+WORDS_FILE = "/usr/share/dict/words"
+
+
+def buildEnglishTrie(root):
+  with open(WORDS_FILE) as f:
+    for line in f:
+      word = line.rstrip()
+      addWordToTrie(word, root)
+
+def addWordToTrie(word, node):
+  if len(word) == 0:
+    node.endWord = True
+    return
+  letterToAdd = word[0]
+  if node.hasChild(letterToAdd):
+    addWordToTrie(word[1:], node.getChildWithValue(letterToAdd))
+  else:
+    newNode = Node(letterToAdd)
+    node.addChild(newNode)
+    addWordToTrie(word[1:], newNode)
+
+def trieHasWord(node, word):
+  if len(word) == 0:
+    if node.endWord:
+      return True
+    else:
+      return False
+  letterToFind = word[0]
+  childWithLetter = node.getChildWithValue(letterToFind)
+  if childWithLetter:
+    return trieHasWord(childWithLetter, word[1:])
+  else:
+    return False
+
+def walkBoard(game, word, wordLengths, row, col, trie, words):
+  game.board[row][col].visited = True
+  word = word + game.board[row][col].letter
+  print word + " " + str(row) + "," + str(col)
+  if not wordLengths:
+    print words
+  if trieHasWord(trie, word) and len(word) in game.wordLengths:
+    print word
+    words.append(word)
+    wordLengths.remove(len(word))
+    for i in range(-1, 2):
+      for j in range(-1, 2):
+        newRow = row + i
+        newCol = col + j
+        if (not (newRow==row and newCol==col) and
+            validCell(game, row+i, col+j) and
+            not game.board[newRow][newCol].visited):
+          walkBoard(game, "", wordLengths, row+i, col+j, trie, words)
+  for i in range(-1, 2):
+    for j in range(-1, 2):
+      newRow = row + i
+      newCol = col + j
+      if (not (newRow==row and newCol==col) and
+          validCell(game, row+i, col+j) and
+          not game.board[newRow][newCol].visited):
+        walkBoard(game, word, wordLengths, row+i, col+j, trie, words)
+  game.board[row][col].visited = False
+
+
+def validCell(game, row, col):
+  return (row >= 0 and row < game.getHeight() and
+          col >= 0 and col < game.getWidth())
+
+def main():
+  allTheWords = Node()
+  buildEnglishTrie(allTheWords)
+  game = Game()
+  game.buildBoardFromFile("input.txt")
+  for i in range(0, game.getHeight()):
+    for j in range(0, game.getWidth()):
+      walkBoard(game, '', game.wordLengths, i, j, allTheWords, [])
+
+if __name__ == "__main__":
+  main()
