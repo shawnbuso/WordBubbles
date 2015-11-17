@@ -14,7 +14,6 @@ function getToIt() {
       }
     }
   }, 50);
-  console.log("Done");
 }
 
 function buildEnglishTrie(root) {
@@ -72,20 +71,18 @@ function walkBoard(game, word, wordLengths, row, col, trie, words, nodesInWord) 
   if (trieHasWord(trie, word, true) &&
       wordLengths.indexOf(word.length) !== -1) {
     words.push(word);
-    console.log("Coloring " + word);
-    game.setInWords(colors[colorIndex++]);
+    game.setInWords(nodesInWord, colors[colorIndex++]);
     removeValueFromArray(word.length, wordLengths);
     if (wordLengths.length == 0) {
-      console.log(words);
+      alert("Found a solution!\n" + words);
       consoleDiv.innerHTML = consoleDiv.innerHTML + words.toString() + "<br/>";
-      game.board[row][col].setVisited(false)
+      game.clearInWords(nodesInWord);
+      game.board[row][col].setVisited(false);
       removeValueFromArray(game.board[row][col], nodesInWord);
       removeValueFromArray(word, words);
       if (words.length == 0) {
         colorIndex = 0;
       }
-      console.log("Clearing " + word);
-      game.clearInWords(nodesInWord);
       wordLengths.push(word.length);
       return;
     }
@@ -102,7 +99,6 @@ function walkBoard(game, word, wordLengths, row, col, trie, words, nodesInWord) 
     if (words.length == 0) {
       colorIndex = 0;
     }
-    console.log("Clearing " + word);
     game.clearInWords(nodesInWord);
     wordLengths.push(word.length);
   }

@@ -2,7 +2,6 @@ var Cell = function(letter, td) {
   this.letter = letter;
   this.visited = false;
   this.td = td;
-  this.wordsUsingMe = 0;
 }
 
 Cell.prototype.setVisited = function(visited) {
@@ -12,7 +11,7 @@ Cell.prototype.setVisited = function(visited) {
   } else {
     this.td.className = "";
   }
-  alert(this);
+  //alert(this);
 }
 
 Cell.prototype.toString = function() {
@@ -35,25 +34,21 @@ Game.prototype.toString = function() {
   return ret;
 }
 
-Game.prototype.setInWords = function(color) {
-  for (i in this.board) {
-    for (j in this.board[i]) {
-      if (this.board[i][j].td.className == "visited") {
-        this.board[i][j].wordsUsingMe++;
-        this.board[i][j].td.className = "";
-        this.board[i][j].td.style.backgroundColor = color;
-      }
+Game.prototype.setInWords = function(nodes, color) {
+  for (i in nodes) {
+    if (nodes[i].td.className == "visited") {
+      nodes[i].td.style.backgroundColor = color;
     }
   }
+  var x;
 }
 
 Game.prototype.clearInWords = function(nodes) {
   for (i in nodes) {
     nodes[i].wordsUsingMe--;
-    //if (this.board[i][j].wordsUsingMe == 0) {
-      nodes[i].td.style.backgroundColor = '';
-    //}
+    nodes[i].td.style.backgroundColor = '';
   }
+  var x;
 }
 
 Game.prototype.buildBoard = function(input) {
