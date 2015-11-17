@@ -1,7 +1,6 @@
 class Node:
   def __init__(self, letter=None):
     self.children = []
-    self.visited = False
     self.endWord = False
     self.letter = letter
 

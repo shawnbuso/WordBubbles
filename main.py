@@ -54,8 +54,6 @@ def walkBoard(game, word, wordLengths, row, col, trie, words):
     game.board[row][col].visited = False
     return
   if trieHasWord(trie, word) and len(word) in wordLengths:
-    oldWords = words[:]
-    oldLengths = wordLengths[:]
     words.append(word)
     wordLengths.remove(len(word))
     if not wordLengths:
@@ -77,9 +75,9 @@ def walkBoard(game, word, wordLengths, row, col, trie, words):
       newRow = row + i
       newCol = col + j
       if (not (newRow==row and newCol==col) and
-          validCell(game, row+i, col+j) and
+          validCell(game, newRow, newCol) and
           not game.board[newRow][newCol].visited):
-        walkBoard(game, word, wordLengths, row+i, col+j, trie, words)
+        walkBoard(game, word, wordLengths, newRow, newCol, trie, words)
   game.board[row][col].visited = False
 
 
@@ -92,10 +90,9 @@ def main():
   buildEnglishTrie(allTheWords)
   game = Game()
   game.buildBoardFromFile("input.txt")
-  emptyList = []
   for i in range(0, game.getHeight()):
     for j in range(0, game.getWidth()):
-      walkBoard(game, '', game.wordLengths, i, j, allTheWords, emptyList)
+      walkBoard(game, '', game.wordLengths, i, j, allTheWords, [])
 
 if __name__ == "__main__":
   main()

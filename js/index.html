@@ -1,0 +1,33 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <title>WordBubbles Solver</title>
+  </head>
+
+  <body>
+    <div class="float-left">
+      Width: <input id="width" type="text" value="4"/>
+    </div>
+    <div class="float-left">
+      Height: <input id="height" type="text" value = "4"/>
+    </div>
+    <div class="clear-left">
+      <textarea id="grid" rows="10" cols="10">5,5,4
+arfh
+keio
+oos.
+ltt.</textarea>
+    </div>
+    <input type="button" id="go" value="Go!" />
+    <div id="table-container"></div>
+    <script type="text/javascript" src="js/dictionary.js"></script>
+    <script type="text/javascript" src="js/node.js"></script>
+    <script type="text/javascript" src="js/game.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript">
+      document.getElementById("go").addEventListener("click", function() {
+        var application = new Application();
+      });
+    </script>
+  </body>
+</html>
