@@ -80,10 +80,11 @@ function walkBoard(game, word, wordLengths, row, col, trie, words, nodesInWord) 
       game.board[row][col].setVisited(false)
       removeValueFromArray(game.board[row][col], nodesInWord);
       removeValueFromArray(word, words);
+      if (words.length == 0) {
+        colorIndex = 0;
+      }
       game.clearInWords(nodesInWord);
-      nodesInWord.length = 0;
       wordLengths.push(word.length);
-      colorIndex = 0;
       return;
     }
     for (var i=0; i<game.getHeight(); i++) {
@@ -96,12 +97,11 @@ function walkBoard(game, word, wordLengths, row, col, trie, words, nodesInWord) 
       }
     }
     removeValueFromArray(word, words);
-    game.clearInWords(nodesInWord);
-    nodesInWord.length = 0;
-    wordLengths.push(word.length);
     if (words.length == 0) {
       colorIndex = 0;
     }
+    game.clearInWords(nodesInWord);
+    wordLengths.push(word.length);
   }
   for (var i=-1; i<2; i++) {
     for (var j=-1; j<2; j++) {
