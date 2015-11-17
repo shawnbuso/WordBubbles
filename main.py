@@ -60,15 +60,17 @@ def walkBoard(game, word, wordLengths, row, col, trie, words):
     if not wordLengths:
       print words
       game.board[row][col].visited = False
+      words.remove(word)
+      wordLengths.append(len(word))
       return
     for i in range(0, game.getHeight()):
       for j in range(0, game.getWidth()):
         if (not (i==row and j==col) and
             validCell(game, i, j) and
             not game.board[i][j].visited):
-          walkBoard(game, "", wordLengths[:], i, j, trie, words[:])
-    words = oldWords
-    wordLengths = oldLengths
+          walkBoard(game, "", wordLengths, i, j, trie, words)
+    words.remove(word)
+    wordLengths.append(len(word))
   for i in range(-1, 2):
     for j in range(-1, 2):
       newRow = row + i
@@ -76,7 +78,7 @@ def walkBoard(game, word, wordLengths, row, col, trie, words):
       if (not (newRow==row and newCol==col) and
           validCell(game, row+i, col+j) and
           not game.board[newRow][newCol].visited):
-        walkBoard(game, word, wordLengths[:], row+i, col+j, trie, words[:])
+        walkBoard(game, word, wordLengths, row+i, col+j, trie, words)
   game.board[row][col].visited = False
 
 
@@ -92,7 +94,7 @@ def main():
   emptyList = []
   for i in range(0, game.getHeight()):
     for j in range(0, game.getWidth()):
-      walkBoard(game, '', game.wordLengths[:], i, j, allTheWords, emptyList[:])
+      walkBoard(game, '', game.wordLengths, i, j, allTheWords, emptyList)
 
 if __name__ == "__main__":
   main()
