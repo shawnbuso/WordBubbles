@@ -7,13 +7,15 @@
   <body>
     <div class="float-left">
       Word lengths: <input id="lengths" type="text" value="3,3"/>
-    <div class="clear-left">
-      <textarea id="grid" rows="10" cols="10">tox
+      <div class="clear-left">
+        <textarea id="grid" rows="10" cols="10">tox
 fie</textarea>
+      </div>
+      <input type="button" id="go" value="Go!" />
+      <div id="table-container" class="float-left"></div>
+      <div id="console" class="clear-left"></div>
     </div>
-    <input type="button" id="go" value="Go!" />
-    <div id="table-container"></div>
-    <div id="console"></div>
+    <div id="answers-container" class="float-left"></div>
     <script type="text/javascript" src="js/dictionary.js"></script>
     <script type="text/javascript" src="js/node.js"></script>
     <script type="text/javascript" src="js/game.js"></script>

@@ -1,6 +1,7 @@
 var consoleDiv = document.getElementById('console');
 var colors = ["red", "yellow", "green", "blue"];
 var colorIndex = 0;
+var knownSolutions = [];
 
 function getToIt() {
   var game = new Game();
@@ -74,8 +75,11 @@ function walkBoard(game, word, wordLengths, row, col, trie, words, nodesInWord) 
     game.setInWords(nodesInWord, colors[colorIndex++]);
     removeValueFromArray(word.length, wordLengths);
     if (wordLengths.length == 0) {
-      alert("Found a solution!\n" + words);
-      consoleDiv.innerHTML = consoleDiv.innerHTML + words.toString() + "<br/>";
+      if (!knownSolutionExists(words.sort())) {
+        game.printAnswer(words);
+        var wordsCopy = JSON.parse(JSON.stringify(words)).sort();
+        knownSolutions.push(wordsCopy);
+      }
       game.clearInWords(nodesInWord);
       colorIndex--;
       game.board[row][col].setVisited(false);
@@ -126,4 +130,27 @@ function removeValueFromArray(value, array) {
   if (i !== -1) {
     array.splice(i, 1);
   }
+}
+
+function knownSolutionExists(words) {
+  // Return words in knownSolutions
+  var i, j;
+  for (i in knownSolutions) {
+    currentTest = knownSolutions[i];
+    for (j in words) {
+      if (currentTest[j] != words[j]) {
+        console.log("These don't match:");
+        console.log(currentTest);
+        console.log(words);
+        break;
+      }
+    }
+    if (j == words.length-1) {
+      console.log("These match:");
+      console.log(currentTest);
+      console.log(words);
+      return true;
+    }
+  }
+  return false;
 }

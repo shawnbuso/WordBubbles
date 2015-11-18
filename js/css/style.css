@@ -15,3 +15,11 @@ table {
 .visited {
   background-color: gray;
 }
+
+#go {
+	display: block;
+}
+
+#answers-container {
+	margin-left: 20px;
+}

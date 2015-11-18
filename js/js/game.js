@@ -11,7 +11,7 @@ Cell.prototype.setVisited = function(visited) {
   } else {
     this.td.className = "";
   }
-  //alert(this);
+  alert(this);
 }
 
 Cell.prototype.toString = function() {
@@ -21,6 +21,8 @@ Cell.prototype.toString = function() {
 var Game = function() {
   this.board = [];
   this.wordLengths = [];
+  this.answersContainer = document.getElementById('answers-container');
+  this.table = null;
 }
 
 Game.prototype.toString = function() {
@@ -57,8 +59,8 @@ Game.prototype.buildBoard = function(input) {
   for (length in this.wordLengths) {
      this.wordLengths[length] = parseInt(this.wordLengths[length]);
    }
-  var table = document.createElement('table');
-  table.id = "table";
+  this.table = document.createElement('table');
+  this.table.id = "table";
   var tbody = document.createElement('tbody');
   var lines = input.split('\n');
   var row = 0;
@@ -76,8 +78,8 @@ Game.prototype.buildBoard = function(input) {
     tbody.appendChild(tr);
     row++;
   }
-  table.appendChild(tbody);
-  document.getElementById('table-container').appendChild(table);
+  this.table.appendChild(tbody);
+  document.getElementById('table-container').appendChild(this.table);
 }
 
 Game.prototype.getHeight = function() {
@@ -86,4 +88,11 @@ Game.prototype.getHeight = function() {
 
 Game.prototype.getWidth = function() {
   return this.board[0].length;
+}
+
+Game.prototype.printAnswer = function(words) {
+  var newTable = document.createElement('table');
+  newTable.innerHTML = this.table.innerHTML;
+  this.answersContainer.appendChild(newTable);
+  this.answersContainer.appendChild(document.createTextNode(words));
 }
