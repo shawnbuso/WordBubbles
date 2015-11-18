@@ -31,14 +31,43 @@ BoardWalker.prototype.trieHasWord = function(node, word, isFullWord) {
   }
 }
 
+BoardWalker.prototype.markNodeVisited = function(game, row, col, visited) {
+  game.board[row][col].setVisited(visited);
+  var message = new WorkerMessage(
+      WorkerMessage.Code.SET_VISITED,
+      {"row": row, "col": col, "visited": visited});
+  postMessage(JSON.stringify(message));
+}
+
+BoardWalker.prototype.setInWords = function(nodes, color) {
+  var message = new WorkerMessage(
+      WorkerMessage.Code.SET_IN_WORDS,
+      {'nodes': JSON.stringify(nodes), 'color': color});
+  postMessage(JSON.stringify(message));
+}
+
+BoardWalker.prototype.clearInWords = function(nodes) {
+  var message = new WorkerMessage(
+      WorkerMessage.Code.CLEAR_IN_WORDS,
+      {'nodes': JSON.stringify(nodes)});
+  postMessage(JSON.stringify(message));
+}
+
+BoardWalker.prototype.printAnswer = function(words) {
+  var message = new WorkerMessage(
+      WorkerMessage.Code.PRINT_ANSWER,
+      {'words': words});
+  postMessage(JSON.stringify(message));
+}
+
 BoardWalker.prototype.walkBoard = function(game, word, wordLengths, row, col, trie, words, nodesInWord) {
-  game.board[row][col].setVisited(true);
+  this.markNodeVisited(game, row, col, true);
   game.drawBoard();
   word = word + game.board[row][col].letter;
   nodesInWord.push(game.board[row][col]);
   if (!this.trieHasWord(trie, word, false) ||
       word.length > Math.max.apply(null, wordLengths)) {
-    game.board[row][col].setVisited(false);
+    this.markNodeVisited(game, row, col, false);
     game.drawBoard();
     this.removeValueFromArray(game.board[row][col], nodesInWord);
     return;
@@ -46,17 +75,17 @@ BoardWalker.prototype.walkBoard = function(game, word, wordLengths, row, col, tr
   if (this.trieHasWord(trie, word, true) &&
       wordLengths.indexOf(word.length) !== -1) {
     words.push(word);
-    game.setInWords(nodesInWord, this.app.colors[this.app.colorIndex++]);
+    this.setInWords(nodesInWord, this.app.colors[this.app.colorIndex++]);
     this.removeValueFromArray(word.length, wordLengths);
     if (wordLengths.length == 0) {
       if (!this.knownSolutionExists(words.sort())) {
-        game.printAnswer(words);
+        this.printAnswer(words);
         var wordsCopy = JSON.parse(JSON.stringify(words)).sort();
         this.app.knownSolutions.push(wordsCopy);
       }
-      game.clearInWords(nodesInWord);
+      this.clearInWords(nodesInWord);
       this.app.colorIndex--;
-      game.board[row][col].setVisited(false);
+      this.markNodeVisited(game, row, col, false);
       game.drawBoard();
       this.removeValueFromArray(game.board[row][col], nodesInWord);
       this.removeValueFromArray(word, words);
@@ -76,7 +105,7 @@ BoardWalker.prototype.walkBoard = function(game, word, wordLengths, row, col, tr
       }
     }
     this.removeValueFromArray(word, words);
-    game.clearInWords(nodesInWord);
+    this.clearInWords(nodesInWord);
     this.app.colorIndex--;
     wordLengths.push(word.length);
   }
@@ -91,7 +120,7 @@ BoardWalker.prototype.walkBoard = function(game, word, wordLengths, row, col, tr
       }
     }
   }
-  game.board[row][col].setVisited(false);
+  this.markNodeVisited(game, row, col, false);
   game.drawBoard();
   this.removeValueFromArray(game.board[row][col], nodesInWord);
 }
@@ -123,4 +152,13 @@ BoardWalker.prototype.knownSolutionExists = function(words) {
     }
   }
   return false;
+}
+
+onmessage = function(e) {
+  // Load dependencies
+  importScripts('game.js', 'node.js', 'main.js', 'worker-message.js');
+  var app = JSON.parse(e.data);
+  Application.restoreProtos(app);
+  var instance = new BoardWalker(app);
+  instance.getToIt();
 }

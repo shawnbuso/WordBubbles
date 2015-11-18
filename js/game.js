@@ -1,7 +1,9 @@
-var Cell = function(letter, td) {
+var Cell = function(letter, td, row, col) {
   this.letter = letter;
   this.visited = false;
   this.td = td;
+  this.row = row;
+  this.col = col;
 }
 
 Cell.prototype.setVisited = function(visited) {
@@ -18,7 +20,7 @@ Cell.prototype.toString = function() {
 }
 
 var Game = function(showPaths) {
-  this.showPaths = showPaths;
+  //this.showPaths = showPaths;
   this.board = [];
   this.wordLengths = [];
   this.answersContainer = document.getElementById('answers-container');
@@ -30,7 +32,7 @@ Game.prototype.toString = function() {
   var ret = "";
   for (row in this.board) {
     for (cell in this.board[row]) {
-      ret = ret + cell.toString() + " ";
+      ret = ret + this.board[row][cell].toString() + " ";
     }
     ret = ret + "\n";
   }
@@ -38,9 +40,6 @@ Game.prototype.toString = function() {
 }
 
 Game.prototype.drawBoard = function() {
-  if (this.showPaths) {
-    alert();
-  }
 }
 
 Game.prototype.setInWords = function(nodes, color) {
@@ -80,7 +79,7 @@ Game.prototype.buildBoard = function(input) {
       var td = document.createElement('td');
       td.appendChild(document.createTextNode(lines[line][cell]));
       tr.appendChild(td);
-      this.board[row].push(new Cell(lines[line][cell], td));
+      this.board[row].push(new Cell(lines[line][cell], td, row, col));
       col++;
     }
     tbody.appendChild(tr);
@@ -110,4 +109,12 @@ Game.prototype.printAnswer = function(words) {
   var newTable = this.getTableCopy();
   this.answersContainer.appendChild(newTable);
   this.answersContainer.appendChild(document.createTextNode(words));
+}
+
+Game.prototype.setCellProtos = function(thisObj) {
+  for (row in thisObj.board) {
+    for (cell in thisObj.board[row]) {
+      thisObj.board[row][cell].__proto__ = Cell.prototype;
+    }
+  }
 }
