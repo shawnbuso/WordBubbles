@@ -4,7 +4,16 @@ var colorIndex = 0;
 var knownSolutions = [];
 
 function getToIt() {
-  var game = new Game();
+  var showPaths = document.getElementById('show-paths').checked;
+  if (showPaths) {
+    alert("You have opted to show paths in real time.\n" +
+          "This can be super slow!\n"+
+          "When the next alert box appears, click\n" +
+          "\"Prevent this page from creating additional dialogs\"\n"+
+          "(or similar)");
+    alert("Click the checkbox below, then click \"OK\"");
+  }
+  var game = new Game(showPaths);
   game.buildBoard(document.getElementById("grid").value);
   var allTheWords = new Node();
   buildEnglishTrie(allTheWords), 50;

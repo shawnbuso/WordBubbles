@@ -17,7 +17,8 @@ Cell.prototype.toString = function() {
   return this.letter;
 }
 
-var Game = function() {
+var Game = function(showPaths) {
+  this.showPaths = showPaths;
   this.board = [];
   this.wordLengths = [];
   this.answersContainer = document.getElementById('answers-container');
@@ -36,7 +37,9 @@ Game.prototype.toString = function() {
 }
 
 Game.prototype.drawBoard = function() {
-  alert();
+  if (this.showPaths) {
+    alert();
+  }
 }
 
 Game.prototype.setInWords = function(nodes, color) {
