@@ -22,6 +22,7 @@ var Game = function(showPaths) {
   this.board = [];
   this.wordLengths = [];
   this.answersContainer = document.getElementById('answers-container');
+  this.answersContainer.innerHTML = '';
   this.table = null;
 }
 
@@ -86,7 +87,9 @@ Game.prototype.buildBoard = function(input) {
     row++;
   }
   this.table.appendChild(tbody);
-  document.getElementById('table-container').appendChild(this.table);
+  var tableContainer = document.getElementById('table-container');
+  tableContainer.innerHTML = '';
+  tableContainer.appendChild(this.table);
 }
 
 Game.prototype.getHeight = function() {

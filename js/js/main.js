@@ -15,8 +15,8 @@ function getToIt() {
   }
   var game = new Game(showPaths);
   game.buildBoard(document.getElementById("grid").value);
-  var allTheWords = new Node();
-  buildEnglishTrie(allTheWords), 50;
+  // allTheWords is set by trie.json
+  setNodeProtos(allTheWords);
   setTimeout(function() {
     for (var i=0; i<game.getHeight(); i++) {
       for (var j=0; j<game.getWidth(); j++) {
@@ -26,24 +26,10 @@ function getToIt() {
   }, 50);
 }
 
-function buildEnglishTrie(root) {
-  for (i in Dictionary.WORDS) {
-    addWordToTrie(Dictionary.WORDS[i], root);
-  }
-}
-
-function addWordToTrie(word, node) {
-  if (word.length == 0) {
-    node.endWord = true;
-    return;
-  }
-  var letterToAdd = word.charAt(0);
-  if (node.hasChild(letterToAdd)) {
-    addWordToTrie(word.substring(1), node.getChildWithValue(letterToAdd));
-  } else {
-    var newNode = new Node(letterToAdd)
-    node.addChild(newNode);
-    addWordToTrie(word.substring(1), newNode);
+function setNodeProtos(node) {
+  node.__proto__ = Node.prototype;
+  for (child in node.children) {
+    setNodeProtos(node.children[child]);
   }
 }
 
