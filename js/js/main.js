@@ -61,11 +61,13 @@ function trieHasWord(node, word, isFullWord) {
 
 function walkBoard(game, word, wordLengths, row, col, trie, words, nodesInWord) {
   game.board[row][col].setVisited(true);
+  game.drawBoard();
   word = word + game.board[row][col].letter;
   nodesInWord.push(game.board[row][col]);
   if (!trieHasWord(trie, word, false) ||
       word.length > Math.max.apply(null, wordLengths)) {
     game.board[row][col].setVisited(false);
+    game.drawBoard();
     removeValueFromArray(game.board[row][col], nodesInWord);
     return;
   }
@@ -83,6 +85,7 @@ function walkBoard(game, word, wordLengths, row, col, trie, words, nodesInWord) 
       game.clearInWords(nodesInWord);
       colorIndex--;
       game.board[row][col].setVisited(false);
+      game.drawBoard();
       removeValueFromArray(game.board[row][col], nodesInWord);
       removeValueFromArray(word, words);
       if (words.length == 0) {
@@ -117,6 +120,7 @@ function walkBoard(game, word, wordLengths, row, col, trie, words, nodesInWord) 
     }
   }
   game.board[row][col].setVisited(false);
+  game.drawBoard();
   removeValueFromArray(game.board[row][col], nodesInWord);
 }
 

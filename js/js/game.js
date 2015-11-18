@@ -11,7 +11,6 @@ Cell.prototype.setVisited = function(visited) {
   } else {
     this.td.className = "";
   }
-  alert(this);
 }
 
 Cell.prototype.toString = function() {
@@ -34,6 +33,10 @@ Game.prototype.toString = function() {
     ret = ret + "\n";
   }
   return ret;
+}
+
+Game.prototype.drawBoard = function() {
+  alert();
 }
 
 Game.prototype.setInWords = function(nodes, color) {
@@ -61,6 +64,7 @@ Game.prototype.buildBoard = function(input) {
    }
   this.table = document.createElement('table');
   this.table.id = "table";
+  //this.table.className = "board-state";
   var tbody = document.createElement('tbody');
   var lines = input.split('\n');
   var row = 0;
@@ -90,9 +94,14 @@ Game.prototype.getWidth = function() {
   return this.board[0].length;
 }
 
-Game.prototype.printAnswer = function(words) {
+Game.prototype.getTableCopy = function() {
   var newTable = document.createElement('table');
   newTable.innerHTML = this.table.innerHTML;
+  return newTable;
+}
+
+Game.prototype.printAnswer = function(words) {
+  var newTable = this.getTableCopy();
   this.answersContainer.appendChild(newTable);
   this.answersContainer.appendChild(document.createTextNode(words));
 }
