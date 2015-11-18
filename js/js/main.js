@@ -138,16 +138,10 @@ function knownSolutionExists(words) {
     currentTest = knownSolutions[i];
     for (j in words) {
       if (currentTest[j] != words[j]) {
-        console.log("These don't match:");
-        console.log(currentTest);
-        console.log(words);
         break;
       }
     }
     if (j == words.length-1) {
-      console.log("These match:");
-      console.log(currentTest);
-      console.log(words);
       return true;
     }
   }
