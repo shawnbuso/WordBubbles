@@ -8,11 +8,12 @@ var Application = function() {
 Application.prototype.getToIt = function() {
   var gridString = document.getElementById('grid').value;
   var lengths = document.getElementById('lengths').value.split(',');
+  var delay = parseInt(document.getElementById('delay').value);
   this.game = new GameUI(this.lengths);
   this.game.buildBoard(document.getElementById("grid").value);
   var boardWorker = new Worker('js/board-walker.js');
   boardWorker.onmessage = this.handleWorkerMessage.bind(this);
-  boardWorker.postMessage(JSON.stringify({'lengths': lengths, 'gridString': gridString}));
+  boardWorker.postMessage(JSON.stringify({'lengths': lengths, 'gridString': gridString, 'delay': delay}));
 }
 
 Application.prototype.handleWorkerMessage = function(xMessage) {

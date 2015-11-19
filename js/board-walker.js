@@ -130,8 +130,9 @@ BoardWalker.prototype.fixNodeProtos = function(node) {
 
 onmessage = function(e) {
   // Load dependencies
-  importScripts('../data/trie.js', 'game.js', 'node.js', 'main.js', 'worker-message.js');
+  importScripts('../data/trie.js', 'game.js', 'node.js', 'main.js', 'util.js', 'worker-message.js');
   var data = JSON.parse(e.data);
+  Util.delay = data.delay;
   var instance = new BoardWalker(data.lengths, data.gridString);
   instance.getToIt();
 }
