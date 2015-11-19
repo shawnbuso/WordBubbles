@@ -53,10 +53,11 @@ GameUI.prototype.buildBoard = function(input) {
     this.board.push([]);
     var col = 0;
     for (cell in lines[line]) {
+      var letter = lines[line][cell].toUpperCase();
       var td = document.createElement('td');
-      td.appendChild(document.createTextNode(lines[line][cell]));
+      td.appendChild(document.createTextNode(letter));
       tr.appendChild(td);
-      this.board[row].push(new CellUI(lines[line][cell], td, row, col));
+      this.board[row].push(new CellUI(letter, td, row, col));
       col++;
     }
     tbody.appendChild(tr);

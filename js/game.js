@@ -1,5 +1,5 @@
 var Cell = function(letter, row, col) {
-  this.letter = letter;
+  this.letter = letter.toUpperCase();;
   this.visited = false;
   this.row = row;
   this.col = col;
