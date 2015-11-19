@@ -5,8 +5,13 @@ var Cell = function(letter, row, col) {
   this.col = col;
 }
 
-Cell.prototype.setVisited = function(visited) {
+Cell.prototype.setVisited = function(row, col, visited) {
   this.visited = visited;
+  var message = new WorkerMessage(
+      WorkerMessage.Code.SET_VISITED,
+      {"row": row, "col": col, "visited": visited});
+  Game.busyWait(500);
+  postMessage(JSON.stringify(message));
 }
 
 Cell.prototype.toString = function() {
@@ -52,6 +57,7 @@ Game.prototype.setInWords = function(nodes) {
   var message = new WorkerMessage(
       WorkerMessage.Code.SET_IN_WORDS,
       {'coords': coords});
+  Game.busyWait(500);
   postMessage(JSON.stringify(message));
 }
 
@@ -63,5 +69,23 @@ Game.prototype.clearInWords = function(nodes) {
   var message = new WorkerMessage(
       WorkerMessage.Code.CLEAR_IN_WORDS,
       {'coords': coords});
+  Game.busyWait(500);
   postMessage(JSON.stringify(message));
+}
+
+Game.prototype.printAnswer = function(words) {
+  var message = new WorkerMessage(
+      WorkerMessage.Code.PRINT_ANSWER,
+      {'words': words});
+  Game.busyWait(500);
+  postMessage(JSON.stringify(message));
+}
+
+Game.busyWait = function(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds){
+      break;
+    }
+  }
 }

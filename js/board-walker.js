@@ -35,28 +35,13 @@ BoardWalker.prototype.trieHasWord = function(node, word, isFullWord) {
   }
 }
 
-BoardWalker.prototype.markNodeVisited = function(game, row, col, visited) {
-  game.board[row][col].setVisited(visited);
-  var message = new WorkerMessage(
-      WorkerMessage.Code.SET_VISITED,
-      {"row": row, "col": col, "visited": visited});
-  postMessage(JSON.stringify(message));
-}
-
-BoardWalker.prototype.printAnswer = function(words) {
-  var message = new WorkerMessage(
-      WorkerMessage.Code.PRINT_ANSWER,
-      {'words': words});
-  postMessage(JSON.stringify(message));
-}
-
 BoardWalker.prototype.walkBoard = function(game, word, wordLengths, row, col, trie, words, nodesInWord) {
-  this.markNodeVisited(game, row, col, true);
+  game.board[row][col].setVisited(row, col, true);
   word = word + game.board[row][col].letter;
   nodesInWord.push(game.board[row][col]);
   if (!this.trieHasWord(trie, word, false) ||
       word.length > Math.max.apply(null, wordLengths)) {
-    this.markNodeVisited(game, row, col, false);
+    game.board[row][col].setVisited(row, col, false);
     this.removeValueFromArray(game.board[row][col], nodesInWord);
     return;
   }
@@ -67,12 +52,12 @@ BoardWalker.prototype.walkBoard = function(game, word, wordLengths, row, col, tr
     this.removeValueFromArray(word.length, wordLengths);
     if (wordLengths.length == 0) {
       if (!this.knownSolutionExists(words.sort())) {
-        this.printAnswer(words);
+        game.printAnswer(words);
         var wordsCopy = JSON.parse(JSON.stringify(words)).sort();
         this.knownSolutions.push(wordsCopy);
       }
       this.game.clearInWords(nodesInWord);
-      this.markNodeVisited(game, row, col, false);
+      game.board[row][col].setVisited(row, col, false);
       this.removeValueFromArray(game.board[row][col], nodesInWord);
       this.removeValueFromArray(word, words);
       wordLengths.push(word.length);
@@ -102,7 +87,7 @@ BoardWalker.prototype.walkBoard = function(game, word, wordLengths, row, col, tr
       }
     }
   }
-  this.markNodeVisited(game, row, col, false);
+  game.board[row][col].setVisited(row, col, false);
   this.removeValueFromArray(game.board[row][col], nodesInWord);
 }
 
