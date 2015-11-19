@@ -43,3 +43,25 @@ Game.prototype.getHeight = function() {
 Game.prototype.getWidth = function() {
   return this.board[0].length;
 }
+
+Game.prototype.setInWords = function(nodes) {
+  var coords = [];
+  for (i in nodes) {
+    coords.push([nodes[i].row, nodes[i].col]);
+  }
+  var message = new WorkerMessage(
+      WorkerMessage.Code.SET_IN_WORDS,
+      {'coords': coords});
+  postMessage(JSON.stringify(message));
+}
+
+Game.prototype.clearInWords = function(nodes) {
+  var coords = [];
+  for (i in nodes) {
+    coords.push([nodes[i].row, nodes[i].col]);
+  }
+  var message = new WorkerMessage(
+      WorkerMessage.Code.CLEAR_IN_WORDS,
+      {'coords': coords});
+  postMessage(JSON.stringify(message));
+}

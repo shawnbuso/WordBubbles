@@ -30,27 +30,21 @@ var GameUI = function(lengths) {
   this.table = null;
 }
 
-GameUI.prototype.setInWords = function(nodes, color) {
-  for (i in nodes) {
-    if (nodes[i].td.className == "visited") {
-      nodes[i].td.style.backgroundColor = color;
-    }
+GameUI.prototype.setInWords = function(coords, color) {
+  for (i in coords) {
+    this.board[coords[i][0]][coords[i][1]].td.style.backgroundColor = color;
   }
-  var x;
 }
 
-GameUI.prototype.clearInWords = function(nodes) {
-  for (i in nodes) {
-    nodes[i].wordsUsingMe--;
-    nodes[i].td.style.backgroundColor = '';
+GameUI.prototype.clearInWords = function(coords) {
+  for (i in coords) {
+    this.board[coords[i][0]][coords[i][1]].td.style.backgroundColor = '';
   }
-  var x;
 }
 
 GameUI.prototype.buildBoard = function(input) {
   this.table = document.createElement('table');
   this.table.id = "table";
-  //this.table.className = "board-state";
   var tbody = document.createElement('tbody');
   var lines = input.split('\n');
   var row = 0;
