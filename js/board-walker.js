@@ -3,9 +3,9 @@ var BoardWalker = function(app) {
 }
 
 BoardWalker.prototype.getToIt = function() {
-  for (var i=0; i<this.app.game.getHeight(); i++) {
-    for (var j=0; j<this.app.game.getWidth(); j++) {
-      this.walkBoard(this.app.game, '', this.app.game.wordLengths, i, j, this.app.allTheWords, [], []);
+  for (var i=0; i<this.game.getHeight(); i++) {
+    for (var j=0; j<this.game.getWidth(); j++) {
+      this.walkBoard(this.game, '', this.game.wordLengths, i, j, allTheWords, [], []);
     }
   }
 }
@@ -62,13 +62,11 @@ BoardWalker.prototype.printAnswer = function(words) {
 
 BoardWalker.prototype.walkBoard = function(game, word, wordLengths, row, col, trie, words, nodesInWord) {
   this.markNodeVisited(game, row, col, true);
-  game.drawBoard();
   word = word + game.board[row][col].letter;
   nodesInWord.push(game.board[row][col]);
   if (!this.trieHasWord(trie, word, false) ||
       word.length > Math.max.apply(null, wordLengths)) {
     this.markNodeVisited(game, row, col, false);
-    game.drawBoard();
     this.removeValueFromArray(game.board[row][col], nodesInWord);
     return;
   }
@@ -86,7 +84,6 @@ BoardWalker.prototype.walkBoard = function(game, word, wordLengths, row, col, tr
       this.clearInWords(nodesInWord);
       this.app.colorIndex--;
       this.markNodeVisited(game, row, col, false);
-      game.drawBoard();
       this.removeValueFromArray(game.board[row][col], nodesInWord);
       this.removeValueFromArray(word, words);
       if (words.length == 0) {
@@ -121,7 +118,6 @@ BoardWalker.prototype.walkBoard = function(game, word, wordLengths, row, col, tr
     }
   }
   this.markNodeVisited(game, row, col, false);
-  game.drawBoard();
   this.removeValueFromArray(game.board[row][col], nodesInWord);
 }
 
@@ -156,9 +152,11 @@ BoardWalker.prototype.knownSolutionExists = function(words) {
 
 onmessage = function(e) {
   // Load dependencies
-  importScripts('game.js', 'node.js', 'main.js', 'worker-message.js');
+  importScripts('../data/trie.js', 'game.js', 'node.js', 'main.js', 'worker-message.js');
   var app = JSON.parse(e.data);
-  Application.restoreProtos(app);
+  Application.setNodeProtos(allTheWords);
   var instance = new BoardWalker(app);
+  instance.game = new Game(app.lengths);
+  instance.game.buildBoard(app.gridString);
   instance.getToIt();
 }

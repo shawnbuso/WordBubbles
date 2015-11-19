@@ -7,11 +7,10 @@ var Application = function() {
 }
 
 Application.prototype.getToIt = function() {
-  this.game = new Game();
+  this.gridString = document.getElementById('grid').value;
+  this.lengths = document.getElementById('lengths').value.split(',');
+  this.game = new GameUI(this.lengths);
   this.game.buildBoard(document.getElementById("grid").value);
-  // allTheWords is set by trie.json
-  this.allTheWords = allTheWords;
-  //Application.setNodeProtos(this.allTheWords, this);
   /*var boardWalker = new BoardWalker(this);
   boardWalker.getToIt();*/
   var boardWorker = new Worker('js/board-walker.js');
@@ -19,18 +18,10 @@ Application.prototype.getToIt = function() {
   boardWorker.postMessage(JSON.stringify(this));
 }
 
-Application.restoreProtos = function(app) {
-  //app.consoleDiv.__proto__ = Element.prototype;
-  app.__proto__ = Application.prototype;
-  app.game.__proto__ = Game.prototype;
-  app.game.setCellProtos(app.game);
-  Application.setNodeProtos(app.allTheWords, app);
-}
-
-Application.setNodeProtos = function(node, thisObj) {
+Application.setNodeProtos = function(node) {
   node.__proto__ = Node.prototype;
   for (child in node.children) {
-    Application.setNodeProtos(node.children[child], thisObj);
+    Application.setNodeProtos(node.children[child]);
   }
 }
 
