@@ -113,12 +113,12 @@ BoardWalker.prototype.currentSolutionExists = function() {
   this.currentWords.sort();
   for (i in this.knownSolutions) {
     currentTest = this.knownSolutions[i];
-    for (j in this.currentWords) {
+    for (var j = 0; j < this.currentWords.length; j++) {
       if (currentTest[j] != this.currentWords[j]) {
         break;
       }
     }
-    if (j == this.currentWords.length-1) {
+    if (j == this.currentWords.length) {
       return true;
     }
   }
